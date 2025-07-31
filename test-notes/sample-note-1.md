@@ -49,3 +49,17 @@ priority: 2
 3. Implement a stack using arrays and linked lists
 
 **Note to self**: Prepare implementation examples for midterm project
+
+from pathlib import Path
+
+# Path to your sample note
+note_path = Path("/Users/iara/Projects/Future-Proof-Notes/test-notes/sample-note-1.md")
+
+# Call your function
+metadata, content = read_note_file(note_path)
+
+# Print the results
+print("Metadata:")
+print(metadata)
+print("\nContent:")
+print(content)
