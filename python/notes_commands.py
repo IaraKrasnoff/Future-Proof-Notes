@@ -6,7 +6,7 @@ import subprocess
 from pathlib import Path
 # Import utility functions from notes_utils module
 from notes_utils import (
-    NOTE_EXT, iso_now, sanitize_filename, generate_note_filename,
+    NOTE_EXT, iso_now, generate_note_filename,
     read_note_file, write_note_file
 )
 
@@ -165,13 +165,18 @@ def search_notes(query: str):
     results = []
     # Convert query to lowercase for case-insensitive search
     q = query.lower()
+    # Track corrupted files
+    corrupted_files = []
+    
     # Iterate through all files in notes directory with NOTE_EXT extension
     for note_file in NOTES_DIR.glob(f"*{NOTE_EXT}"):
         # Read metadata and content from the note file
         meta, content = read_note_file(note_file)
-        # Skip this file if metadata couldn't be read
+        # Skip this file if metadata couldn't be read (corrupted)
         if meta is None:
+            corrupted_files.append(note_file.name)
             continue
+        
         # Create searchable text by combining title, tags, and content (all lowercase)
         haystack = ' '.join([
             meta.get('title', '').lower(),
@@ -182,6 +187,11 @@ def search_notes(query: str):
         if q in haystack:
             # Add filename and metadata tuple to results
             results.append((note_file.name, meta))
+    
+    # Warn about corrupted files if any were found
+    if corrupted_files:
+        print(f"Warning: Skipped {len(corrupted_files)} corrupted file(s): {', '.join(corrupted_files)}")
+    
     # Return the list of matching notes
     return results
 

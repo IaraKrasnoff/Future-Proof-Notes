@@ -60,6 +60,10 @@ def read_note_file(filepath: Path):
         # Return parsed metadata and content
         return metadata, content
     # Handle any exceptions during file reading or parsing
+    except yaml.YAMLError as e:
+        # More specific YAML error reporting
+        print(f"YAML parsing error in {filepath.name}: {e}")
+        return None, None
     except Exception as e:
         # Print error message with filename and exception details
         print(f"Error reading note {filepath.name}: {e}")
